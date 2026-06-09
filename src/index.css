@@ -140,4 +140,75 @@
   .animate-marquee {
     animation: marquee 28s linear infinite;
   }
+
+  /* ── IoTBackground animations ─────────────────────────────────────── */
+  @keyframes iot-pulse-node {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50%       { opacity: 1;   transform: scale(1.6); }
+  }
+  @keyframes iot-travel-x {
+    0%   { transform: translateX(-100px); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateX(calc(100vw + 100px)); opacity: 0; }
+  }
+  @keyframes iot-travel-y {
+    0%   { transform: translateY(-100px); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(calc(100vh + 100px)); opacity: 0; }
+  }
+  @keyframes iot-radar-ping {
+    0%   { transform: scale(0);   opacity: 0.6; }
+    100% { transform: scale(4);   opacity: 0; }
+  }
+  @keyframes iot-scan-line {
+    0%   { top: -10%; }
+    100% { top: 110%; }
+  }
+  @keyframes iot-signal-wave {
+    0%   { transform: scale(0.4); opacity: 0.8; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  @keyframes iot-float-slow {
+    0%, 100% { transform: translateY(0)    translateX(0); }
+    50%       { transform: translateY(-12px) translateX(6px); }
+  }
+  @keyframes iot-spin-slow {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes iot-spin-reverse {
+    to { transform: rotate(-360deg); }
+  }
+  @keyframes iot-binary-fall {
+    0%   { transform: translateY(-20vh); opacity: 0; }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.7; }
+    100% { transform: translateY(120vh);  opacity: 0; }
+  }
+  @keyframes iot-dash-flow {
+    to { stroke-dashoffset: -40; }
+  }
+  @keyframes iot-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.2; }
+  }
+  @keyframes iot-satellite {
+    from { transform: rotate(0deg)   translateX(260px); }
+    to   { transform: rotate(360deg) translateX(260px); }
+  }
+
+  .iot-pulse-node   { animation: iot-pulse-node   4s  ease-in-out linear infinite; }
+  .iot-travel-x     { animation: iot-travel-x     12s linear       infinite; }
+  .iot-travel-y     { animation: iot-travel-y     14s linear       infinite; }
+  .iot-radar-ping   { animation: iot-radar-ping   8s  ease-out     infinite; }
+  .iot-scan-line    { animation: iot-scan-line    10s linear       infinite; position: absolute; }
+  .iot-signal-wave  { animation: iot-signal-wave  3s  ease-out     infinite; }
+  .iot-float-slow   { animation: iot-float-slow   8s  ease-in-out  infinite; }
+  .iot-spin-slow    { animation: iot-spin-slow    40s linear       infinite; }
+  .iot-spin-reverse { animation: iot-spin-reverse 25s linear       infinite; }
+  .iot-binary-fall  { animation: iot-binary-fall  12s linear       infinite; }
+  .iot-dash-flow    { animation: iot-dash-flow    3s  linear       infinite; }
+  .iot-blink        { animation: iot-blink        1.4s ease-in-out infinite; }
+  .iot-satellite    { animation: iot-satellite    20s linear       infinite; position: absolute; }
 }

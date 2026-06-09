@@ -12,9 +12,7 @@ import Layout from "@/components/Layout";
 import Section from "@/components/Section";
 import { industries as industriesData } from "@/data/industries";
 import heroBg from "@/assets/hero-bg.jpg";
-
-// Lazy-load Three.js scene
-const HeroScene = lazy(() => import("@/components/HeroScene"));
+import { IoTBackground } from "@/components/IoTBackground";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -227,11 +225,9 @@ const Index = () => {
           <div className="absolute inset-0 bg-grid opacity-15" />
         </div>
 
-        {/* 3D scene as full background */}
-        <div className="absolute inset-0 z-0 opacity-60">
-          <Suspense fallback={null}>
-            <HeroScene />
-          </Suspense>
+        {/* IoT network background animation */}
+        <div className="absolute inset-0 z-0">
+          <IoTBackground />
         </div>
 
         {/* Ambient glows */}
