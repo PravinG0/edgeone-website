@@ -1,31 +1,33 @@
-import { Suspense, useRef } from "react";
+import { Suspense, lazy } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Cpu, Radio, Server, Brain, Zap, Cloud, Building2,
-  MapPin, Activity, Heart, Bot, Layers, Gauge, ShieldCheck,
+  Activity, Heart, Bot, Layers, ShieldCheck,
   Microscope, GraduationCap, Car, ShoppingCart, Factory, Hospital,
   Settings, Workflow, Globe, HardDrive, Network, MonitorDot,
-  BarChart3, ChevronRight,
+  BarChart3, ChevronRight, Wifi, Gauge, Lock, GitBranch,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import Section from "@/components/Section";
 import { industries as industriesData } from "@/data/industries";
 import heroBg from "@/assets/hero-bg.jpg";
 
-// Lazy-load Three.js scene to avoid SSR issues
-import { lazy } from "react";
+// Lazy-load Three.js scene
 const HeroScene = lazy(() => import("@/components/HeroScene"));
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
 const techTags = [
-  { label: "AI", color: "from-blue-500/20 to-blue-600/10 border-blue-500/30 text-blue-400" },
-  { label: "Edge Computing", color: "from-cyan-500/20 to-cyan-600/10 border-cyan-500/30 text-cyan-400" },
-  { label: "Industrial IoT", color: "from-indigo-500/20 to-indigo-600/10 border-indigo-500/30 text-indigo-400" },
-  { label: "GPU Infrastructure", color: "from-purple-500/20 to-purple-600/10 border-purple-500/30 text-purple-400" },
-  { label: "Automation", color: "from-violet-500/20 to-violet-600/10 border-violet-500/30 text-violet-400" },
-  { label: "Smart Systems", color: "from-sky-500/20 to-sky-600/10 border-sky-500/30 text-sky-400" },
+  { label: "AI",                icon: Brain,     color: "text-blue-400",   border: "border-blue-500/30",   bg: "bg-blue-500/10" },
+  { label: "Edge Computing",    icon: Cpu,        color: "text-cyan-400",   border: "border-cyan-500/30",   bg: "bg-cyan-500/10" },
+  { label: "Industrial IoT",    icon: Wifi,       color: "text-indigo-400", border: "border-indigo-500/30", bg: "bg-indigo-500/10" },
+  { label: "GPU Infrastructure",icon: Server,     color: "text-purple-400", border: "border-purple-500/30", bg: "bg-purple-500/10" },
+  { label: "Automation",        icon: Zap,        color: "text-violet-400", border: "border-violet-500/30", bg: "bg-violet-500/10" },
+  { label: "Smart Systems",     icon: Network,    color: "text-sky-400",    border: "border-sky-500/30",    bg: "bg-sky-500/10" },
+  { label: "Real-Time RTLS",    icon: Gauge,      color: "text-emerald-400",border: "border-emerald-500/30",bg: "bg-emerald-500/10" },
+  { label: "Edge Security",     icon: Lock,       color: "text-rose-400",   border: "border-rose-500/30",   bg: "bg-rose-500/10" },
+  { label: "AI Model Deploy",   icon: GitBranch,  color: "text-amber-400",  border: "border-amber-500/30",  bg: "bg-amber-500/10" },
 ];
 
 const whoWeAre = [
@@ -216,144 +218,113 @@ const Index = () => {
     <Layout>
 
       {/* ── 1. HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        <div className="ambient-light w-[500px] h-[500px] bg-primary top-[-10%] left-[-10%] animate-pulse" />
-        <div className="ambient-light w-[400px] h-[400px] bg-accent bottom-[10%] right-[-5%] animate-pulse" />
+      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
 
+        {/* Background image */}
         <div className="absolute inset-0">
           <img src={heroBg} alt="" className="w-full h-full object-cover opacity-10 scale-110 blur-[2px]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/75 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/70 to-background" />
           <div className="absolute inset-0 bg-grid opacity-15" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-8 items-center min-h-screen py-32">
-            {/* Left — text */}
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, ease: "easeOut" }}
+        {/* 3D scene as full background */}
+        <div className="absolute inset-0 z-0 opacity-60">
+          <Suspense fallback={null}>
+            <HeroScene />
+          </Suspense>
+        </div>
+
+        {/* Ambient glows */}
+        <div className="ambient-light w-[600px] h-[600px] bg-primary top-[-15%] left-[-10%] animate-pulse" />
+        <div className="ambient-light w-[500px] h-[500px] bg-accent bottom-[5%] right-[-8%] animate-pulse" />
+
+        {/* Centered content */}
+        <div className="relative z-10 container mx-auto px-4 flex flex-col items-center text-center pt-32 pb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+            className="max-w-4xl"
+          >
+            <motion.span
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block"
             >
-              <motion.span
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block"
+              Edge Computing · IoT · AI Infrastructure
+            </motion.span>
+
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.08] mb-8 font-outfit">
+              Best{" "}
+              <span className="text-gradient">Edge Computing</span>{" "}
+              &amp; IoT Asset Tracking Platform{" "}
+              <span className="text-gradient">for Smart Operations.</span>
+            </h1>
+
+            <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
+              EdgeOne delivers end-to-end IoT platform infrastructure combining real-time location systems (RTLS),
+              edge artificial intelligence, and cloud infrastructure services — purpose-built for warehouses,
+              factories, and mission-critical industrial operations.
+            </p>
+
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link
+                to="/contact"
+                className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-sm font-black text-white transition-all hover:brightness-110 glow-box uppercase tracking-widest font-outfit"
               >
-                Edge Computing · IoT · AI Infrastructure
-              </motion.span>
+                Start Building <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                to="/platform"
+                className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-4 text-sm font-semibold text-foreground transition-all hover:border-primary/50 hover:bg-secondary"
+              >
+                Get Guided <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
 
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.08] mb-8 font-outfit">
-                Best{" "}
-                <span className="text-gradient">Edge Computing</span>{" "}
-                &amp; IoT Asset Tracking Platform{" "}
-                <span className="text-gradient">for Smart Operations.</span>
-              </h1>
+            {/* Mini stats */}
+            <div className="flex flex-wrap justify-center gap-10 mt-14 pt-10 border-t border-white/5">
+              {[
+                { val: "500+", label: "Devices Connected" },
+                { val: "99.9%", label: "Uptime SLA" },
+                { val: "5+", label: "Countries Deployed" },
+              ].map((s) => (
+                <div key={s.label}>
+                  <div className="text-2xl font-black text-gradient font-outfit">{s.val}</div>
+                  <div className="text-xs text-zinc-500 font-medium mt-1">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
 
-              <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-10 max-w-xl font-medium">
-                EdgeOne delivers end-to-end IoT platform infrastructure combining real-time location systems (RTLS),
-                edge artificial intelligence, and cloud infrastructure services — purpose-built for warehouses,
-                factories, and mission-critical industrial operations.
-              </p>
+        {/* ── Marquee tag strip — inside hero at bottom ── */}
+        <div className="relative z-10 w-full mt-auto pb-10">
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-3.5 text-sm font-black text-white transition-all hover:brightness-110 glow-box uppercase tracking-widest font-outfit"
+          <div className="overflow-hidden py-4 border-y border-white/5 bg-black/20 backdrop-blur-sm">
+            {/* Double the items so the loop is seamless */}
+            <div className="flex gap-4 animate-marquee whitespace-nowrap" style={{ width: "max-content" }}>
+              {[...techTags, ...techTags].map((tag, i) => (
+                <div
+                  key={i}
+                  className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border ${tag.border} ${tag.bg} backdrop-blur-sm flex-shrink-0`}
                 >
-                  Start Building <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  to="/platform"
-                  className="inline-flex items-center gap-2 rounded-xl border border-border px-7 py-3.5 text-sm font-semibold text-foreground transition-all hover:border-primary/50 hover:bg-secondary"
-                >
-                  Get Guided <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-
-              {/* Mini stats */}
-              <div className="flex flex-wrap gap-8 mt-12 pt-10 border-t border-white/5">
-                {[
-                  { val: "500+", label: "Devices Connected" },
-                  { val: "99.9%", label: "Uptime SLA" },
-                  { val: "5+", label: "Countries Deployed" },
-                ].map((s) => (
-                  <div key={s.label}>
-                    <div className="text-2xl font-black text-gradient font-outfit">{s.val}</div>
-                    <div className="text-xs text-zinc-500 font-medium mt-1">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Right — 3D Scene */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.1, ease: "easeOut", delay: 0.2 }}
-              className="hidden lg:block relative h-[600px] w-full"
-            >
-              <div className="absolute inset-0 rounded-3xl overflow-hidden">
-                <Suspense fallback={
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="w-32 h-32 rounded-full border border-primary/30 animate-pulse" />
-                  </div>
-                }>
-                  <HeroScene />
-                </Suspense>
-              </div>
-              {/* Floating label badges */}
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-12 right-8 glass-card rounded-2xl px-4 py-3 border border-primary/20 z-10"
-              >
-                <div className="text-xs font-bold text-primary uppercase tracking-widest">Edge AI</div>
-                <div className="text-xs text-zinc-400 mt-0.5">Real-time inference</div>
-              </motion.div>
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="absolute bottom-24 left-4 glass-card rounded-2xl px-4 py-3 border border-cyan-500/20 z-10"
-              >
-                <div className="text-xs font-bold text-cyan-400 uppercase tracking-widest">IoT RTLS</div>
-                <div className="text-xs text-zinc-400 mt-0.5">Live asset tracking</div>
-              </motion.div>
-              <motion.div
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute bottom-12 right-12 glass-card rounded-2xl px-4 py-3 border border-purple-500/20 z-10"
-              >
-                <div className="text-xs font-bold text-purple-400 uppercase tracking-widest">GPU Infra</div>
-                <div className="text-xs text-zinc-400 mt-0.5">AI workloads</div>
-              </motion.div>
-            </motion.div>
+                  <tag.icon className={`w-4 h-4 ${tag.color}`} />
+                  <span className={`text-sm font-bold tracking-wide ${tag.color}`}>{tag.label}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── 2. TECH TAG STRIP ───────────────────────────────────────────────── */}
-      <section className="py-8 border-y border-white/5 bg-white/[0.01] overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap justify-center gap-3">
-            {techTags.map((tag, i) => (
-              <motion.div
-                key={tag.label}
-                initial={{ opacity: 0, scale: 0.85 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full border bg-gradient-to-r ${tag.color} backdrop-blur-sm`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
-                <span className="text-sm font-bold tracking-wide">{tag.label}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Section 2 (old standalone tag strip) is now merged into hero above */}
 
-      {/* ── 3. WHO WE ARE ───────────────────────────────────────────────────── */}
+      {/* ── 2. WHO WE ARE ───────────────────────────────────────────────────── */}
       <Section className="py-32">
         <div className="grid lg:grid-cols-2 gap-16 items-start mb-20">
           <div>
