@@ -17,15 +17,15 @@ import { IoTBackground } from "@/components/IoTBackground";
 // ── Data ─────────────────────────────────────────────────────────────────────
 
 const techTags = [
-  { label: "AI",                icon: Brain,     color: "text-blue-400",   border: "border-blue-500/30",   bg: "bg-blue-500/10" },
-  { label: "Edge Computing",    icon: Cpu,        color: "text-cyan-400",   border: "border-cyan-500/30",   bg: "bg-cyan-500/10" },
-  { label: "Industrial IoT",    icon: Wifi,       color: "text-indigo-400", border: "border-indigo-500/30", bg: "bg-indigo-500/10" },
-  { label: "GPU Infrastructure",icon: Server,     color: "text-purple-400", border: "border-purple-500/30", bg: "bg-purple-500/10" },
-  { label: "Automation",        icon: Zap,        color: "text-violet-400", border: "border-violet-500/30", bg: "bg-violet-500/10" },
-  { label: "Smart Systems",     icon: Network,    color: "text-sky-400",    border: "border-sky-500/30",    bg: "bg-sky-500/10" },
-  { label: "Real-Time RTLS",    icon: Gauge,      color: "text-emerald-400",border: "border-emerald-500/30",bg: "bg-emerald-500/10" },
-  { label: "Edge Security",     icon: Lock,       color: "text-rose-400",   border: "border-rose-500/30",   bg: "bg-rose-500/10" },
-  { label: "AI Model Deploy",   icon: GitBranch,  color: "text-amber-400",  border: "border-amber-500/30",  bg: "bg-amber-500/10" },
+  { label: "AI",                icon: Brain      },
+  { label: "Edge Computing",    icon: Cpu        },
+  { label: "Industrial IoT",    icon: Wifi       },
+  { label: "GPU Infrastructure",icon: Server     },
+  { label: "Automation",        icon: Zap        },
+  { label: "Smart Systems",     icon: Network    },
+  { label: "Real-Time RTLS",    icon: Gauge      },
+  { label: "Edge Security",     icon: Lock       },
+  { label: "AI Model Deploy",   icon: GitBranch  },
 ];
 
 const whoWeAre = [
@@ -296,21 +296,20 @@ const Index = () => {
         </div>
 
         {/* ── Marquee tag strip — inside hero at bottom ── */}
-        <div className="relative z-10 w-full mt-auto pb-10">
+        <div className="relative z-10 w-full mt-auto">
           {/* Fade edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-          <div className="overflow-hidden py-4 border-y border-white/5 bg-black/20 backdrop-blur-sm">
-            {/* Double the items so the loop is seamless */}
-            <div className="flex gap-4 animate-marquee whitespace-nowrap" style={{ width: "max-content" }}>
+          <div className="overflow-hidden py-5 border-t border-blue-500/10 bg-blue-950/20 backdrop-blur-sm">
+            <div className="flex gap-5 animate-marquee whitespace-nowrap" style={{ width: "max-content" }}>
               {[...techTags, ...techTags].map((tag, i) => (
                 <div
                   key={i}
-                  className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border ${tag.border} ${tag.bg} backdrop-blur-sm flex-shrink-0`}
+                  className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-blue-500/25 bg-blue-500/8 backdrop-blur-sm flex-shrink-0"
                 >
-                  <tag.icon className={`w-4 h-4 ${tag.color}`} />
-                  <span className={`text-sm font-bold tracking-wide ${tag.color}`}>{tag.label}</span>
+                  <tag.icon className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm font-bold tracking-wide text-blue-300">{tag.label}</span>
                 </div>
               ))}
             </div>
