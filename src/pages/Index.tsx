@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -13,6 +13,7 @@ import Section from "@/components/Section";
 import { industries as industriesData } from "@/data/industries";
 import heroBg from "@/assets/hero-bg.jpg";
 import { IoTBackground } from "@/components/IoTBackground";
+import { CoreSolutions } from "@/components/CoreSolutions";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -217,6 +218,245 @@ const techEcosystem = [
   { icon: BarChart3, label: "Real-Time Telemetry Platforms" },
 ];
 
+// ── Industries Hub Section ────────────────────────────────────────────────────
+
+const IND_CX = 400;
+const IND_CY = 245;
+const IND_R  = 168;
+
+const IND_NODES = industriesEmpower.map((ind, i) => {
+  const angle = (i * (360 / industriesEmpower.length) - 90) * (Math.PI / 180);
+  return {
+    ...ind,
+    nx: IND_CX + IND_R * Math.cos(angle),
+    ny: IND_CY + IND_R * Math.sin(angle),
+  };
+});
+
+function IndustriesHubSection() {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  return (
+    <Section className="py-32 bg-card border-y border-border overflow-hidden">
+
+      {/* Two-column layout: heading left, hub right */}
+      <div className="grid lg:grid-cols-2 gap-12 items-center">
+
+        {/* Left — heading & subheading */}
+        <motion.div
+          initial={{ opacity: 0, x: -24 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col justify-center"
+        >
+          <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block">Industries We Empower</span>
+          <h2 className="text-4xl md:text-5xl font-black font-outfit tracking-tight mb-6 leading-[1.08]">
+            Built for the Industries,{" "}
+            <span className="text-gradient">That Build the World.</span>
+          </h2>
+          <p className="text-lg text-zinc-400 max-w-xl font-medium leading-relaxed mb-8">
+            From smart warehouses with real-time location systems to hospitals with live patient telemetry,
+            EdgeOne powers the operations that can't afford to stop.
+          </p>
+
+          {/* Industry list chips — visible on desktop alongside the hub */}
+          <div className="hidden lg:flex flex-wrap gap-2">
+            {industriesEmpower.map((ind, i) => (
+              <motion.div
+                key={ind.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-bold cursor-pointer transition-all duration-200 ${
+                  hoveredIdx === i
+                    ? "bg-primary/15 border-primary/50 text-white"
+                    : "bg-white/[0.03] border-white/10 text-zinc-400 hover:border-primary/30 hover:text-zinc-200"
+                }`}
+              >
+                <ind.icon className="w-3.5 h-3.5 text-primary" />
+                {ind.label}
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-8">
+            <Link
+              to="/industries"
+              className="inline-flex items-center gap-2 rounded-xl border border-border px-6 py-3 text-sm font-semibold text-foreground hover:bg-secondary hover:border-primary/40 transition-all"
+            >
+              View All Industries <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </motion.div>
+
+        {/* Right — SVG radial hub */}
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="relative select-none"
+        >
+          {/* Desktop SVG hub */}
+          <div className="hidden md:block relative">
+            <svg viewBox="0 0 500 500" fill="none" className="w-full max-w-lg mx-auto">
+              {/* Orbit dashed circle */}
+              <circle cx="250" cy="250" r={IND_R}
+                stroke="#3b82f6" strokeWidth="1" strokeOpacity="0.1" strokeDasharray="5 6" />
+
+              {/* Connection lines */}
+              {IND_NODES.map((node, i) => {
+                // Re-compute coords relative to 250,250 center for this smaller viewBox
+                const angle = (i * (360 / industriesEmpower.length) - 90) * (Math.PI / 180);
+                const nx = 250 + IND_R * Math.cos(angle);
+                const ny = 250 + IND_R * Math.sin(angle);
+                return (
+                  <motion.line
+                    key={`line-${i}`}
+                    x1={250} y1={250} x2={nx} y2={ny}
+                    stroke="#3b82f6"
+                    strokeWidth={hoveredIdx === i ? 1.5 : 0.8}
+                    strokeDasharray="5 4"
+                    animate={{ strokeOpacity: hoveredIdx === i ? 0.75 : 0.18 }}
+                    transition={{ duration: 0.25 }}
+                  />
+                );
+              })}
+
+              {/* Traveling dots */}
+              {IND_NODES.map((node, i) => {
+                const angle = (i * (360 / industriesEmpower.length) - 90) * (Math.PI / 180);
+                const nx = 250 + IND_R * Math.cos(angle);
+                const ny = 250 + IND_R * Math.sin(angle);
+                return (
+                  <motion.circle
+                    key={`dot-${i}`}
+                    r={2.5} fill="#60a5fa"
+                    initial={{ cx: 250, cy: 250, opacity: 0 }}
+                    animate={{ cx: [250, nx, 250], cy: [250, ny, 250], opacity: [0, 0.9, 0] }}
+                    transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 0.3, delay: i * 0.34, ease: "easeInOut" }}
+                  />
+                );
+              })}
+
+              {/* Pulsing hub rings */}
+              {[0, 0.75, 1.5].map((delay, ri) => (
+                <motion.circle key={`ring-${ri}`} cx={250} cy={250} r={44}
+                  stroke="#3b82f6" strokeWidth="1" fill="none" strokeOpacity={0}
+                  initial={{ r: 44, strokeOpacity: 0 }}
+                  animate={{ r: [44, 70], strokeOpacity: [0.3, 0] }}
+                  transition={{ duration: 2.3, repeat: Infinity, delay, ease: "easeOut" }}
+                />
+              ))}
+
+              {/* Hub */}
+              <circle cx={250} cy={250} r={47} fill="#080e1e" stroke="#3b82f6" strokeWidth="1.5" strokeOpacity="0.55" />
+              <circle cx={250} cy={250} r={37} fill="#3b82f6" fillOpacity="0.07" stroke="#3b82f6" strokeWidth="0.8" strokeOpacity="0.3" />
+              <text x={250} y={245} textAnchor="middle" fill="white" fontSize="12" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="0.5">EdgeOne</text>
+              <text x={250} y={262} textAnchor="middle" fill="#3b82f6" fontSize="7" fontFamily="Inter, sans-serif" letterSpacing="3">PLATFORM</text>
+
+              {/* Industry nodes */}
+              {IND_NODES.map((node, i) => {
+                const angle = (i * (360 / industriesEmpower.length) - 90) * (Math.PI / 180);
+                const nx = 250 + IND_R * Math.cos(angle);
+                const ny = 250 + IND_R * Math.sin(angle);
+                const isHov = hoveredIdx === i;
+                const words = node.label.split(" ");
+                return (
+                  <g key={node.label}
+                    onMouseEnter={() => setHoveredIdx(i)}
+                    onMouseLeave={() => setHoveredIdx(null)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {isHov && (
+                      <motion.circle cx={nx} cy={ny} r={36}
+                        fill="#3b82f6" fillOpacity={0.12} stroke="#3b82f6" strokeWidth={1} strokeOpacity={0.35}
+                        initial={{ r: 28, fillOpacity: 0, strokeOpacity: 0 }}
+                        animate={{ r: 36, fillOpacity: 0.12, strokeOpacity: 0.35 }}
+                        transition={{ duration: 0.2 }}
+                      />
+                    )}
+                    <motion.circle cx={nx} cy={ny} r={27} fill="#080e1e" stroke="#3b82f6"
+                      animate={{ strokeWidth: isHov ? 1.5 : 0.8, strokeOpacity: isHov ? 0.8 : 0.28 }}
+                      transition={{ duration: 0.2 }}
+                    />
+                    <foreignObject x={nx - 13} y={ny - 13} width={26} height={26}>
+                      <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <node.icon style={{ width: 15, height: 15, color: isHov ? "#93c5fd" : "#3b82f6", transition: "color 0.2s" }} />
+                      </div>
+                    </foreignObject>
+                    {words.length <= 2 ? (
+                      <text x={nx} y={ny + 44} textAnchor="middle"
+                        fill={isHov ? "white" : "#a1a1aa"} fontSize="10.5"
+                        fontWeight={isHov ? "700" : "500"} fontFamily="Inter, sans-serif">
+                        {node.label}
+                      </text>
+                    ) : (
+                      <>
+                        <text x={nx} y={ny + 42} textAnchor="middle"
+                          fill={isHov ? "white" : "#a1a1aa"} fontSize="10"
+                          fontWeight={isHov ? "700" : "500"} fontFamily="Inter, sans-serif">
+                          {words.slice(0, 2).join(" ")}
+                        </text>
+                        <text x={nx} y={ny + 55} textAnchor="middle"
+                          fill={isHov ? "white" : "#a1a1aa"} fontSize="10"
+                          fontWeight={isHov ? "700" : "500"} fontFamily="Inter, sans-serif">
+                          {words.slice(2).join(" ")}
+                        </text>
+                      </>
+                    )}
+                  </g>
+                );
+              })}
+            </svg>
+
+            {/* Hover detail card */}
+            <AnimatePresence>
+              {hoveredIdx !== null && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  transition={{ duration: 0.18 }}
+                  className="absolute top-4 right-0 bg-zinc-900/95 border border-primary/25 rounded-2xl p-5 w-52 backdrop-blur-sm shadow-2xl pointer-events-none z-10"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0">
+                      {(() => { const Ic = industriesEmpower[hoveredIdx].icon; return <Ic className="w-5 h-5 text-primary" />; })()}
+                    </div>
+                    <div className="text-sm font-bold text-white leading-tight">{industriesEmpower[hoveredIdx].label}</div>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                    Explore use case <ArrowRight className="w-3 h-3" />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Mobile: grid fallback */}
+          <div className="md:hidden grid grid-cols-2 gap-3">
+            {industriesEmpower.map((ind, i) => (
+              <Link key={ind.label} to={`/industries/${ind.slug}`}
+                className="group flex flex-col items-center text-center p-5 rounded-2xl border border-white/5 bg-white/[0.03] hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+              >
+                <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+                  <ind.icon className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-xs font-bold text-zinc-300 group-hover:text-white transition-colors leading-snug">{ind.label}</span>
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+
+      </div>
+    </Section>
+  );
+}
 // ── WhyEdgeone Radial Hub Component ──────────────────────────────────────────
 
 const WHY_RADIUS = 170;
@@ -398,6 +638,55 @@ function WhyEdgeoneRadial() {
   );
 }
 
+// ── Typing Headline Component ─────────────────────────────────────────────────
+
+const TYPING_PHRASES = [
+  "Real-time Asset Tracking",
+  "Automation",
+  "Healthcare IoT",
+  "RTLS (Indoor Tracking)",
+];
+
+function TypingHeadline() {
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  const [displayed, setDisplayed]   = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = TYPING_PHRASES[phraseIdx];
+
+    if (!isDeleting && displayed === current) {
+      // Finished typing — pause then start deleting
+      const pause = setTimeout(() => setIsDeleting(true), 1800);
+      return () => clearTimeout(pause);
+    }
+
+    if (isDeleting && displayed === "") {
+      // Finished deleting — move to next phrase
+      setIsDeleting(false);
+      setPhraseIdx((p) => (p + 1) % TYPING_PHRASES.length);
+      return;
+    }
+
+    const speed = isDeleting ? 40 : 65;
+    const timer = setTimeout(() => {
+      setDisplayed(isDeleting
+        ? current.slice(0, displayed.length - 1)
+        : current.slice(0, displayed.length + 1)
+      );
+    }, speed);
+
+    return () => clearTimeout(timer);
+  }, [displayed, isDeleting, phraseIdx]);
+
+  return (
+    <span className="text-gradient inline-block min-w-[2ch]">
+      {displayed}
+      <span className="animate-pulse text-primary">|</span>
+    </span>
+  );
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const Index = () => {
@@ -441,10 +730,9 @@ const Index = () => {
             </motion.span>
 
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.08] mb-8 font-outfit">
-              Best{" "}
-              <span className="text-gradient">Edge Computing</span>{" "}
-              &amp; IoT Asset Tracking Platform{" "}
-              <span className="text-gradient">for Smart Operations.</span>
+              We built best
+              <br />
+              <TypingHeadline />
             </h1>
 
             <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
@@ -598,96 +886,10 @@ const Index = () => {
       </Section>
 
       {/* ── 5. OUR CORE SOLUTIONS ───────────────────────────────────────────── */}
-      <Section className="py-32 bg-background">
-        <div className="text-center mb-20">
-          <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block">Our Core Solutions</span>
-          <h2 className="text-4xl md:text-6xl font-black font-outfit tracking-tight mb-6">
-            End-to-End Intelligence. <span className="text-gradient">One Platform.</span>
-          </h2>
-          <p className="text-lg text-zinc-400 max-w-2xl mx-auto font-medium">
-            From IoT at the edge to enterprise-grade cloud infrastructure, every solution is built for
-            performance, scale, and real-world reliability.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {coreSolutions.map((sol, i) => (
-            <motion.div
-              key={sol.title}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className={`group relative rounded-2xl p-8 border ${sol.border} ${sol.bg} backdrop-blur-sm hover:-translate-y-2 transition-all duration-500 flex flex-col overflow-hidden`}
-            >
-              {/* Gradient accent top bar */}
-              <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${sol.accent} opacity-60 group-hover:opacity-100 transition-opacity`} />
-
-              <div className={`w-14 h-14 rounded-2xl ${sol.bg} border ${sol.border} flex items-center justify-center mb-6 relative`}>
-                <div className={`absolute inset-0 blur-xl bg-gradient-to-br ${sol.accent} opacity-20 rounded-full group-hover:opacity-40 transition-opacity`} />
-                <sol.icon className="w-7 h-7 text-primary relative z-10 group-hover:scale-110 transition-transform" />
-              </div>
-
-              <h3 className="text-xl font-bold mb-4 font-outfit">{sol.title}</h3>
-              <p className="text-sm text-zinc-400 leading-relaxed flex-grow">{sol.desc}</p>
-
-              <div className={`mt-6 inline-flex items-center gap-2 text-xs font-bold bg-gradient-to-r ${sol.accent} bg-clip-text text-transparent group-hover:translate-x-1 transition-transform`}>
-                Learn More <ArrowRight className="w-3.5 h-3.5 text-primary" />
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </Section>
+      <CoreSolutions />
 
       {/* ── 6. INDUSTRIES WE EMPOWER ────────────────────────────────────────── */}
-      <Section className="py-32 bg-card border-y border-border overflow-hidden">
-        <div className="text-center mb-20">
-          <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block">Industries We Empower</span>
-          <h2 className="text-4xl md:text-6xl font-black font-outfit tracking-tight mb-6">
-            Built for the Industries,{" "}
-            <span className="text-gradient">That Build the World.</span>
-          </h2>
-          <p className="text-lg text-zinc-400 max-w-2xl mx-auto font-medium">
-            From smart warehouses with real-time location systems to hospitals with live patient telemetry,
-            EdgeOne powers the operations that can't afford to stop.
-          </p>
-        </div>
-
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {industriesEmpower.map((ind, i) => (
-            <motion.div
-              key={ind.label}
-              initial={{ opacity: 0, scale: 0.92 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.07 }}
-            >
-              <Link
-                to={`/industries/${ind.slug}`}
-                className="group flex flex-col items-center text-center p-8 rounded-2xl border border-white/5 bg-white/[0.03] hover:border-primary/40 hover:bg-primary/5 transition-all duration-400"
-              >
-                <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors relative">
-                  <div className="absolute inset-0 blur-xl bg-primary/20 rounded-full scale-0 group-hover:scale-100 transition-transform" />
-                  <ind.icon className="w-8 h-8 text-primary relative z-10 group-hover:scale-110 transition-transform" />
-                </div>
-                <span className="text-sm font-bold text-zinc-300 group-hover:text-white transition-colors leading-snug">
-                  {ind.label}
-                </span>
-                <ArrowRight className="w-4 h-4 text-primary mt-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <div className="text-center mt-14">
-          <Link
-            to="/industries"
-            className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-4 text-sm font-semibold text-foreground hover:bg-secondary hover:border-primary/40 transition-all"
-          >
-            View All Industries <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </Section>
+      <IndustriesHubSection />
 
       {/* ── 7. DEPLOYMENT MODELS ────────────────────────────────────────────── */}
       <Section className="py-32">
