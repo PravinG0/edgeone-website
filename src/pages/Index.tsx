@@ -14,6 +14,7 @@ import { industries as industriesData } from "@/data/industries";
 import heroBg from "@/assets/hero-bg.jpg";
 import { IoTBackground } from "@/components/IoTBackground";
 import { CoreSolutions } from "@/components/CoreSolutions";
+import { IoTHeroVisual } from "@/components/IoTHeroVisual";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 
@@ -359,7 +360,7 @@ function IndustriesHubSection() {
               <text x={250} y={245} textAnchor="middle" fill="white" fontSize="12" fontWeight="700" fontFamily="Outfit, sans-serif" letterSpacing="0.5">EdgeOne</text>
               <text x={250} y={262} textAnchor="middle" fill="#3b82f6" fontSize="7" fontFamily="Inter, sans-serif" letterSpacing="3">PLATFORM</text>
 
-              {/* Industry nodes */}
+              {/* Industry nodes — click navigates to sub-page */}
               {IND_NODES.map((node, i) => {
                 const angle = (i * (360 / industriesEmpower.length) - 90) * (Math.PI / 180);
                 const nx = 250 + IND_R * Math.cos(angle);
@@ -370,6 +371,7 @@ function IndustriesHubSection() {
                   <g key={node.label}
                     onMouseEnter={() => setHoveredIdx(i)}
                     onMouseLeave={() => setHoveredIdx(null)}
+                    onClick={() => window.location.href = `/industries/${node.slug}`}
                     style={{ cursor: "pointer" }}
                   >
                     {isHov && (
@@ -414,28 +416,7 @@ function IndustriesHubSection() {
               })}
             </svg>
 
-            {/* Hover detail card */}
-            <AnimatePresence>
-              {hoveredIdx !== null && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.18 }}
-                  className="absolute top-4 right-0 bg-zinc-900/95 border border-primary/25 rounded-2xl p-5 w-52 backdrop-blur-sm shadow-2xl pointer-events-none z-10"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-9 h-9 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center flex-shrink-0">
-                      {(() => { const Ic = industriesEmpower[hoveredIdx].icon; return <Ic className="w-5 h-5 text-primary" />; })()}
-                    </div>
-                    <div className="text-sm font-bold text-white leading-tight">{industriesEmpower[hoveredIdx].label}</div>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-                    Explore use case <ArrowRight className="w-3 h-3" />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Hover detail card removed — nodes are directly clickable */}
           </div>
 
           {/* Mobile: grid fallback */}
@@ -479,7 +460,7 @@ function WhyEdgeoneRadial() {
 
       {/* Left — Radial SVG Hub */}
       <div className="lg:col-span-7 flex justify-center items-center relative order-2 lg:order-1 select-none">
-        <div className="w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] relative">
+        <div className="w-[360px] h-[360px] sm:w-[580px] sm:h-[580px] relative">
 
           <svg className="w-full h-full absolute inset-0" viewBox="0 0 500 500" fill="none">
             {/* Dashed orbit circle */}
@@ -510,14 +491,14 @@ function WhyEdgeoneRadial() {
             })}
 
             {/* Rotating outer rings */}
-            <motion.circle cx={WHY_CENTER} cy={WHY_CENTER} r="52"
-              stroke="#3b82f6" strokeWidth="2" strokeDasharray="40 20" strokeOpacity="0.4"
+            <motion.circle cx={WHY_CENTER} cy={WHY_CENTER} r="62"
+              stroke="#3b82f6" strokeWidth="2.5" strokeDasharray="40 20" strokeOpacity="0.45"
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
               style={{ transformOrigin: `${WHY_CENTER}px ${WHY_CENTER}px` }}
             />
-            <motion.circle cx={WHY_CENTER} cy={WHY_CENTER} r="64"
-              stroke="#60a5fa" strokeWidth="1" strokeDasharray="10 40 20 10" strokeOpacity="0.2"
+            <motion.circle cx={WHY_CENTER} cy={WHY_CENTER} r="76"
+              stroke="#60a5fa" strokeWidth="1.2" strokeDasharray="10 40 20 10" strokeOpacity="0.22"
               animate={{ rotate: -360 }}
               transition={{ repeat: Infinity, duration: 24, ease: "linear" }}
               style={{ transformOrigin: `${WHY_CENTER}px ${WHY_CENTER}px` }}
@@ -525,12 +506,12 @@ function WhyEdgeoneRadial() {
           </svg>
 
           {/* Central EdgeOne Core */}
-          <div className="absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-primary bg-background flex flex-col items-center justify-center text-center shadow-xl z-20"
+          <div className="absolute w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-primary bg-background flex flex-col items-center justify-center text-center shadow-xl z-20"
             style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
           >
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
-            <Brain className="w-8 h-8 text-primary mb-1 relative z-10" />
-            <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-300 relative z-10">
+            <Brain className="w-10 h-10 sm:w-12 sm:h-12 text-primary mb-1 relative z-10" />
+            <span className="text-[9px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 relative z-10">
               EdgeOne
             </span>
           </div>
@@ -552,16 +533,33 @@ function WhyEdgeoneRadial() {
                 onMouseEnter={() => setHovered(tool.id)}
                 onMouseLeave={() => setHovered(null)}
               >
-                <motion.div
-                  whileHover={{ scale: 1.18 }}
-                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 relative ${
-                    isActive
-                      ? "bg-primary text-white border-2 border-primary shadow-lg shadow-primary/30"
-                      : "bg-white/5 text-zinc-400 border border-white/10 hover:border-primary/40"
-                  }`}
-                >
-                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
-                </motion.div>
+                <div className="flex flex-col items-center gap-1.5">
+                  <motion.div
+                    whileHover={{ scale: 1.2 }}
+                    className={`w-14 h-14 sm:w-18 sm:h-18 rounded-full flex items-center justify-center transition-all duration-300 relative ${
+                      isActive
+                        ? "bg-primary text-white border-2 border-primary shadow-[0_0_24px_rgba(59,130,246,0.5)]"
+                        : "bg-white/5 text-zinc-400 border border-white/10 hover:border-primary/40 hover:bg-primary/10"
+                    }`}
+                    style={{ width: "56px", height: "56px" }}
+                  >
+                    {/* Pulse ring on active */}
+                    {isActive && (
+                      <motion.div
+                        className="absolute inset-0 rounded-full border-2 border-primary"
+                        animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
+                        transition={{ duration: 1, repeat: Infinity }}
+                      />
+                    )}
+                    <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </motion.div>
+                  {/* Label under node */}
+                  <span className={`text-[9px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors duration-200 ${
+                    isActive ? "text-primary" : "text-zinc-600"
+                  }`}>
+                    {tool.category}
+                  </span>
+                </div>
               </div>
             );
           })}
@@ -569,33 +567,45 @@ function WhyEdgeoneRadial() {
       </div>
 
       {/* Right — Info panel */}
-      <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col justify-center min-h-[350px]">
+      <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col justify-center min-h-[420px]">
         <AnimatePresence mode="wait">
           {active ? (
             <motion.div
               key={active.id}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: 24, scale: 0.97 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -24, scale: 0.97 }}
               transition={{ duration: 0.3 }}
-              className="glass-card rounded-2xl p-8 border-2 border-primary/40 relative overflow-hidden"
+              className="glass-card rounded-3xl p-10 border-2 border-primary/40 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
-              <div className="flex items-center gap-3 mb-5">
-                <span className="text-[10px] font-mono font-bold px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-primary uppercase tracking-widest">
+              <div className="absolute top-0 right-0 w-52 h-52 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-primary/5 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-[10px] font-mono font-bold px-4 py-1.5 bg-primary/10 border border-primary/25 rounded-full text-primary uppercase tracking-widest">
                   {active.category}
                 </span>
-                <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+                <div className="flex gap-1">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+                  <div className="w-1.5 h-1.5 bg-primary/50 rounded-full animate-ping" style={{ animationDelay: "0.3s" }} />
+                </div>
               </div>
-              <h3 className="text-xl md:text-2xl font-bold font-outfit text-white mb-4">
+
+              {/* Icon */}
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/25 flex items-center justify-center mb-6 relative">
+                <div className="absolute inset-0 blur-xl bg-primary/30 rounded-2xl" />
+                <active.icon className="w-8 h-8 text-primary relative z-10" />
+              </div>
+
+              <h3 className="text-2xl md:text-3xl font-black font-outfit text-white mb-5 leading-tight">
                 {active.title}
               </h3>
-              <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+              <p className="text-zinc-300 text-base md:text-lg leading-relaxed mb-6">
                 {active.description}
               </p>
-              <div className="mt-6 flex items-center gap-2 text-xs font-mono font-medium text-primary">
+              <div className="flex items-center gap-2 text-xs font-mono font-medium text-primary pt-4 border-t border-white/5">
                 <Zap className="w-4 h-4" />
-                Active Node — Hover to explore
+                Node Active — hover another to explore
               </div>
             </motion.div>
           ) : (
@@ -605,26 +615,26 @@ function WhyEdgeoneRadial() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="glass-card rounded-2xl p-8 relative overflow-hidden"
+              className="glass-card rounded-3xl p-10 relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-xl pointer-events-none" />
-              <div className="flex items-center gap-2 text-primary mb-6">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-xl pointer-events-none" />
+              <div className="flex items-center gap-2 text-primary mb-7">
                 <Brain className="w-5 h-5 animate-pulse" />
                 <span className="text-xs uppercase font-mono tracking-widest font-bold">
                   Explore EdgeOne Capabilities
                 </span>
               </div>
-              <h3 className="text-lg md:text-xl font-bold font-outfit text-white mb-3">
+              <h3 className="text-xl md:text-2xl font-bold font-outfit text-white mb-4">
                 Hover over any orbit node
               </h3>
-              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+              <p className="text-zinc-400 text-sm leading-relaxed mb-7">
                 Each node represents a core EdgeOne capability. Hover to discover what makes us the leading
                 Edge Computing & IoT platform for industrial operations.
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {whyEdgeone.map((t) => (
                   <div key={t.id}
-                    className="bg-white/5 border border-white/5 rounded-lg p-2 text-center text-[10px] text-zinc-400 font-medium"
+                    className="bg-white/5 border border-white/5 rounded-xl p-3 text-center text-xs text-zinc-400 font-medium hover:border-primary/20 hover:text-zinc-200 transition-colors cursor-default"
                   >
                     {t.title.split(" ").slice(0, 2).join(" ")}
                   </div>
@@ -694,7 +704,7 @@ const Index = () => {
     <Layout>
 
       {/* ── 1. HERO ─────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex flex-col overflow-hidden">
 
         {/* Background image */}
         <div className="absolute inset-0">
@@ -712,64 +722,79 @@ const Index = () => {
         <div className="ambient-light w-[600px] h-[600px] bg-primary top-[-15%] left-[-10%] animate-pulse" />
         <div className="ambient-light w-[500px] h-[500px] bg-accent bottom-[5%] right-[-8%] animate-pulse" />
 
-        {/* Centered content */}
-        <div className="relative z-10 container mx-auto px-4 flex flex-col items-center text-center pt-32 pb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-            className="max-w-4xl"
-          >
-            <motion.span
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block"
+        {/* Two-column hero content */}
+        <div className="relative z-10 container mx-auto px-4 flex-1 flex items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-center w-full pt-28 pb-12">
+
+            {/* LEFT — text content */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.9, ease: "easeOut" }}
+              className="flex flex-col items-start text-left"
             >
-              Edge Computing · IoT · AI Infrastructure
-            </motion.span>
-
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[1.08] mb-8 font-outfit">
-              We built best
-              <br />
-              <TypingHeadline />
-            </h1>
-
-            <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-10 max-w-2xl mx-auto font-medium">
-              EdgeOne delivers end-to-end IoT platform infrastructure combining real-time location systems (RTLS),
-              edge artificial intelligence, and cloud infrastructure services — purpose-built for warehouses,
-              factories, and mission-critical industrial operations.
-            </p>
-
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-sm font-black text-white transition-all hover:brightness-110 glow-box uppercase tracking-widest font-outfit"
+              <motion.span
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block"
               >
-                Start Building <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                to="/platform"
-                className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-4 text-sm font-semibold text-foreground transition-all hover:border-primary/50 hover:bg-secondary"
-              >
-                Get Guided <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
+                Edge Computing · IoT · AI Infrastructure
+              </motion.span>
 
-            {/* Mini stats */}
-            <div className="flex flex-wrap justify-center gap-10 mt-14 pt-10 border-t border-white/5">
-              {[
-                { val: "500+", label: "Devices Connected" },
-                { val: "99.9%", label: "Uptime SLA" },
-                { val: "5+", label: "Countries Deployed" },
-              ].map((s) => (
-                <div key={s.label}>
-                  <div className="text-2xl font-black text-gradient font-outfit">{s.val}</div>
-                  <div className="text-xs text-zinc-500 font-medium mt-1">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] mb-8 font-outfit">
+                We built best
+                <br />
+                <TypingHeadline />
+              </h1>
+
+              <p className="text-lg text-zinc-400 leading-relaxed mb-10 max-w-xl font-medium">
+                EdgeOne delivers end-to-end IoT platform infrastructure combining real-time location systems (RTLS),
+                edge artificial intelligence, and cloud infrastructure services — purpose-built for warehouses,
+                factories, and mission-critical industrial operations.
+              </p>
+
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-sm font-black text-white transition-all hover:brightness-110 glow-box uppercase tracking-widest font-outfit"
+                >
+                  Start Building <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  to="/platform"
+                  className="inline-flex items-center gap-2 rounded-xl border border-border px-8 py-4 text-sm font-semibold text-foreground transition-all hover:border-primary/50 hover:bg-secondary"
+                >
+                  Get Guided <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              {/* Mini stats */}
+              <div className="flex flex-wrap gap-10 mt-12 pt-10 border-t border-white/5 w-full">
+                {[
+                  { val: "500+", label: "Devices Connected" },
+                  { val: "99.9%", label: "Uptime SLA" },
+                  { val: "5+",   label: "Countries Deployed" },
+                ].map((s) => (
+                  <div key={s.label}>
+                    <div className="text-2xl font-black text-gradient font-outfit">{s.val}</div>
+                    <div className="text-xs text-zinc-500 font-medium mt-1">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* RIGHT — IoT visual */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.1, ease: "easeOut", delay: 0.3 }}
+              className="hidden lg:flex items-center justify-center"
+            >
+              <IoTHeroVisual />
+            </motion.div>
+
+          </div>
         </div>
 
         {/* ── Marquee tag strip — inside hero at bottom ── */}
@@ -797,15 +822,50 @@ const Index = () => {
       {/* Section 2 (old standalone tag strip) is now merged into hero above */}
 
       {/* ── 2. WHO WE ARE ───────────────────────────────────────────────────── */}
-      <Section className="py-32">
+      <Section className="py-32 relative overflow-hidden">
+        {/* Ambient background pulse */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full"
+            style={{ background: "radial-gradient(circle, hsl(221.2 83.2% 53.3% / 0.04) 0%, transparent 65%)" }} />
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-16 items-start mb-20">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
             <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block">Who We Are</span>
             <h2 className="text-4xl md:text-6xl font-black font-outfit leading-[1.08] tracking-tight">
               Intelligence at the <span className="text-gradient">Edge of Everything.</span>
             </h2>
-          </div>
-          <div className="flex flex-col justify-center">
+            {/* Animated stat row */}
+            <div className="flex gap-8 mt-10 pt-8 border-t border-white/5">
+              {[
+                { val: "10+", label: "Years Experience" },
+                { val: "50+", label: "Enterprise Clients" },
+                { val: "99.9%", label: "Uptime SLA" },
+              ].map((s, i) => (
+                <motion.div key={s.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 + i * 0.1 }}
+                >
+                  <div className="text-2xl font-black text-gradient font-outfit">{s.val}</div>
+                  <div className="text-xs text-zinc-500 font-medium mt-1">{s.label}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="flex flex-col justify-center"
+          >
             <p className="text-lg text-zinc-400 leading-relaxed font-medium">
               Edgeone builds intelligent technology systems that help businesses run faster, smarter, and with greater control.
               From AI computing and industrial automation to real-time monitoring and connected devices, we create solutions
@@ -816,25 +876,32 @@ const Index = () => {
               computing, live data processing, industrial connectivity, and automation to help businesses improve efficiency,
               reduce downtime, and make faster operational decisions with confidence.
             </p>
-          </div>
+          </motion.div>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {whoWeAre.map((item, i) => (
             <motion.div
               key={item.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 32, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.07 }}
-              className="glass-card rounded-2xl p-7 group hover:-translate-y-1.5 transition-all duration-500 flex flex-col"
+              transition={{ delay: i * 0.07, duration: 0.5 }}
+              whileHover={{ y: -6 }}
+              className="glass-card rounded-2xl p-7 group transition-all duration-300 flex flex-col relative overflow-hidden"
             >
+              {/* Hover top accent bar */}
+              <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary/0 via-primary to-primary/0 scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+              {/* Number watermark */}
+              <span className="absolute bottom-4 right-4 text-6xl font-black text-white/[0.03] font-outfit select-none leading-none">{item.num}</span>
+
               <div className="flex items-start justify-between mb-6">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary/20 transition-colors relative">
-                  <div className="absolute inset-0 blur-xl bg-primary/20 rounded-full scale-0 group-hover:scale-100 transition-transform" />
-                  <item.icon className="w-6 h-6 text-primary relative z-10" />
+                  {/* Pulse ring on hover */}
+                  <div className="absolute inset-0 rounded-xl border border-primary/40 scale-0 group-hover:scale-150 opacity-0 group-hover:opacity-0 transition-all duration-700" />
+                  <div className="absolute inset-0 blur-xl bg-primary/20 rounded-full scale-0 group-hover:scale-100 transition-transform duration-500" />
+                  <item.icon className="w-6 h-6 text-primary relative z-10 group-hover:scale-110 transition-transform" />
                 </div>
-                <span className="text-3xl font-black text-white/5 font-outfit select-none">{item.num}</span>
               </div>
               <h3 className="text-base font-bold mb-3 font-outfit leading-snug">{item.title}</h3>
               <p className="text-xs text-zinc-500 leading-relaxed flex-grow">{item.desc}</p>
@@ -844,40 +911,93 @@ const Index = () => {
       </Section>
 
       {/* ── 4. IoT PHILOSOPHY FLOW ──────────────────────────────────────────── */}
-      <Section className="border-t border-border bg-white/[0.02]">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">IoT is not dashboards.</h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+      <Section className="border-t border-border bg-white/[0.02] py-24 relative overflow-hidden">
+        {/* Background radial */}
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 80% 50% at 50% 100%, hsl(221.2 83.2% 53.3% / 0.06) 0%, transparent 70%)" }} />
+
+        <div className="text-center mb-16 relative z-10">
+          <motion.span
+            initial={{ opacity: 0, y: -8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-4 block"
+          >The EdgeOne Principle</motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl md:text-5xl font-black mb-4 font-outfit"
+          >
+            IoT is not <span className="text-gradient">dashboards.</span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground text-lg max-w-2xl mx-auto"
+          >
             Without edge computing, IoT becomes delayed data. With EdgeOne, IoT becomes real-time decision-making infrastructure.
-          </p>
+          </motion.p>
         </div>
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 relative z-10">
           {flowSteps.map((step, i) => (
             <motion.div
               key={step.label}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.12 }}
               className="flex items-center"
             >
-              <div className="flex flex-col items-center text-center w-44">
-                <div className="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 transition-all hover:border-primary/50 hover:bg-primary/5 group">
-                  <step.icon className="w-8 h-8 text-primary transition-all group-hover:scale-110" />
+              <div className="flex flex-col items-center text-center w-48 group cursor-default">
+                {/* Node with pulse rings */}
+                <div className="relative mb-5">
+                  {/* Pulse rings */}
+                  <div className="absolute inset-0 rounded-2xl border border-primary/30 scale-100 group-hover:scale-[1.5] opacity-0 group-hover:opacity-0 transition-all duration-700" />
+                  <motion.div
+                    className="absolute -inset-3 rounded-3xl border border-primary/20"
+                    animate={{ scale: [1, 1.25, 1], opacity: [0.3, 0, 0.3] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
+                  />
+                  <motion.div
+                    className="absolute -inset-6 rounded-3xl border border-primary/10"
+                    animate={{ scale: [1, 1.35, 1], opacity: [0.2, 0, 0.2] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 + 0.5 }}
+                  />
+                  <div className="w-24 h-24 rounded-2xl bg-white/[0.04] border border-white/10 flex items-center justify-center transition-all duration-300 group-hover:bg-primary/10 group-hover:border-primary/40 group-hover:shadow-[0_0_30px_rgba(59,130,246,0.2)] relative z-10">
+                    <step.icon className="w-10 h-10 text-primary transition-all group-hover:scale-110" />
+                  </div>
                 </div>
                 <span className="text-base font-bold text-foreground font-outfit">{step.label}</span>
                 <span className="text-xs text-zinc-500 mt-2 px-2 leading-tight">{step.desc}</span>
+                {/* Step number */}
+                <span className="mt-3 text-[10px] font-mono text-primary/40 tracking-widest">0{i + 1}</span>
               </div>
+
+              {/* Connector */}
               {i < flowSteps.length - 1 && (
                 <>
-                  <div className="hidden md:block w-12 h-px bg-gradient-to-r from-primary/60 to-primary/20 mx-2 relative overflow-hidden">
+                  <div className="hidden md:flex items-center mx-1">
+                    <div className="w-16 h-px bg-gradient-to-r from-primary/50 to-primary/20 relative overflow-hidden">
+                      <motion.div
+                        className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-transparent via-primary to-transparent"
+                        animate={{ x: ["-100%", "200%"] }}
+                        transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.4, ease: "easeInOut" }}
+                      />
+                    </div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary/40 -ml-0.5" />
+                  </div>
+                  <div className="md:hidden w-px h-10 bg-gradient-to-b from-primary/50 to-primary/20 my-1 relative overflow-hidden">
                     <motion.div
-                      className="absolute inset-y-0 left-0 w-4 bg-primary/80"
-                      animate={{ x: ["-100%", "400%"] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.3, ease: "easeInOut" }}
+                      className="absolute inset-x-0 top-0 h-4 bg-gradient-to-b from-transparent via-primary to-transparent"
+                      animate={{ y: ["-100%", "200%"] }}
+                      transition={{ duration: 1.8, repeat: Infinity, delay: i * 0.4 }}
                     />
                   </div>
-                  <div className="md:hidden w-px h-8 bg-gradient-to-b from-primary/60 to-primary/20 my-1" />
                 </>
               )}
             </motion.div>
@@ -920,7 +1040,6 @@ const Index = () => {
 
       {/* ── 8. WHY EDGEONE — Radial Hub ─────────────────────────────────────── */}
       <Section className="py-32 bg-white/[0.02] border-y border-white/5 overflow-hidden">
-        {/* Header */}
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block">Why EdgeOne</span>
           <h2 className="text-4xl md:text-6xl font-black font-outfit tracking-tight mb-6">
@@ -931,8 +1050,6 @@ const Index = () => {
             We don't just deliver technology. We engineer intelligent ecosystems that evolve with your operations.
           </p>
         </div>
-
-        {/* Radial hub grid */}
         <WhyEdgeoneRadial />
       </Section>
 
@@ -974,10 +1091,10 @@ const Index = () => {
       </Section>
 
       {/* ── 10. FINAL CTA ───────────────────────────────────────────────────── */}
-      <section className="relative py-40 md:py-56 overflow-hidden">
+      <section className="relative py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-        <div className="ambient-light w-[900px] h-[900px] bg-primary/15 bottom-[-20%] left-1/2 -translate-x-1/2 blur-[160px]" />
-        <div className="absolute inset-0 bg-grid opacity-15" />
+        <div className="ambient-light w-[700px] h-[700px] bg-primary/12 bottom-[-20%] left-1/2 -translate-x-1/2 blur-[140px]" />
+        <div className="absolute inset-0 bg-grid opacity-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background" />
 
         <div className="container mx-auto px-4 relative z-10 text-center">
@@ -987,13 +1104,13 @@ const Index = () => {
             viewport={{ once: true }}
             className="max-w-4xl mx-auto"
           >
-            <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-8 block">
+            <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block">
               Ready to Build
             </span>
-            <h2 className="text-5xl md:text-8xl font-black mb-8 font-outfit leading-tight tracking-tighter">
+            <h2 className="text-4xl md:text-6xl font-black mb-6 font-outfit leading-tight tracking-tighter">
               Intelligent <span className="text-gradient">Infrastructure?</span>
             </h2>
-            <p className="text-xl md:text-2xl text-zinc-400 max-w-3xl mx-auto mb-14 font-medium leading-relaxed">
+            <p className="text-lg text-zinc-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
               Transform your business with scalable Edge AI, Industrial IoT, and enterprise computing solutions
               engineered for the future. Trusted by enterprises across India, USA, Canada, Mexico, and Sri Lanka.
             </p>
@@ -1001,22 +1118,22 @@ const Index = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-3 rounded-2xl bg-primary px-12 py-5 text-lg font-black text-white transition-all hover:brightness-110 glow-box uppercase tracking-widest font-outfit"
+                className="inline-flex items-center gap-3 rounded-2xl bg-primary px-10 py-4 text-base font-black text-white transition-all hover:brightness-110 glow-box uppercase tracking-widest font-outfit"
               >
                 Get Started <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
                 to="/platform"
-                className="inline-flex items-center gap-3 rounded-2xl border border-border px-10 py-5 text-base font-semibold text-foreground hover:bg-secondary hover:border-primary/40 transition-all"
+                className="inline-flex items-center gap-3 rounded-2xl border border-border px-8 py-4 text-base font-semibold text-foreground hover:bg-secondary hover:border-primary/40 transition-all"
               >
                 Explore Platform
               </Link>
             </div>
 
-            {/* Trust badges */}
-            <div className="flex flex-wrap justify-center gap-4 mt-16 opacity-50">
-              {["India", "USA", "Canada", "Mexico", "Sri Lanka"].map((country) => (
-                <div key={country} className="px-4 py-2 rounded-lg border border-border bg-card text-xs text-muted-foreground font-bold tracking-wider uppercase">
+            {/* Trust country badges */}
+            <div className="flex flex-wrap justify-center gap-3 mt-10 opacity-50">
+              {["India", "USA", "Canada", "Colombia", "Mexico", "Sri Lanka"].map((country) => (
+                <div key={country} className="px-3 py-1.5 rounded-lg border border-border bg-card text-xs text-muted-foreground font-bold tracking-wider uppercase">
                   {country}
                 </div>
               ))}
