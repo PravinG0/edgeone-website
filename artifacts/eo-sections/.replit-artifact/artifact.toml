@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/eo-sections/"
+title = "EdgeOne — Interactive Sections"
+version = "1.0.0"
+id = "artifacts/eo-sections"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/eo-sections/" ]
+localPort = 23776
+
+[services.development]
+run = "pnpm --filter @workspace/eo-sections run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/eo-sections", "run", "build" ]
+publicDir = "artifacts/eo-sections/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23776"
+BASE_PATH = "/eo-sections/"
