@@ -1,5 +1,5 @@
-import { Suspense, lazy } from "react";
-import { motion } from "framer-motion";
+import { Suspense, lazy, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
   ArrowRight, Cpu, Radio, Server, Brain, Zap, Cloud, Building2,
@@ -157,44 +157,52 @@ const deployments = [
 
 const whyEdgeone = [
   {
+    id: "enterprise-arch",
+    category: "Infrastructure",
+    angle: 0,
     icon: ShieldCheck,
     title: "Enterprise-Grade Architecture",
-    points: [
-      "Multi-tenant, role-based access control",
-      "High-availability & fault-tolerant design",
-      "On-premise, hybrid, or full-cloud deployment",
-      "End-to-end encrypted data pipelines",
-    ],
+    description: "Multi-tenant, role-based access control with high-availability fault-tolerant design. Deploy on-premise, hybrid, or full-cloud with end-to-end encrypted data pipelines built for mission-critical reliability.",
   },
   {
+    id: "edge-intelligence",
+    category: "Edge AI",
+    angle: 60,
     icon: Zap,
     title: "Real-Time Edge Intelligence",
-    points: [
-      "Sub-millisecond local data processing",
-      "AI inference at the device layer",
-      "Autonomous rule engine & alerting",
-      "Zero cloud-dependency for critical ops",
-    ],
+    description: "Sub-millisecond local data processing with AI inference at the device layer. Autonomous rule engine and alerting with zero cloud-dependency — decisions happen where the data lives.",
   },
   {
+    id: "iot-integration",
+    category: "Connectivity",
+    angle: 120,
     icon: Network,
     title: "End-to-End IoT Integration",
-    points: [
-      "Full-stack from sensors to dashboards",
-      "Industrial protocol support (Modbus, OPC-UA, MQTT)",
-      "Seamless ERP / MES / SCADA integration",
-      "RTLS & BLE/RFID asset tracking built-in",
-    ],
+    description: "Full-stack from sensors to dashboards with industrial protocol support (Modbus, OPC-UA, MQTT). Seamless ERP / MES / SCADA integration with RTLS & BLE/RFID asset tracking built-in.",
   },
   {
+    id: "custom-hardware",
+    category: "Hardware",
+    angle: 180,
     icon: Cpu,
     title: "Custom Hardware & Software",
-    points: [
-      "Purpose-built edge devices & gateways",
-      "GPU AI servers & workstations",
-      "White-label platform capabilities",
-      "Hardware + software under one ecosystem",
-    ],
+    description: "Purpose-built edge devices, gateways, GPU AI servers, and workstations. White-label platform capabilities with hardware and software delivered under one unified ecosystem.",
+  },
+  {
+    id: "global-deployment",
+    category: "Scale",
+    angle: 240,
+    icon: Globe,
+    title: "Global Deployment Expertise",
+    description: "Proven deployments across India, USA, Canada, Mexico and Sri Lanka. Multi-site infrastructure management with 99.9% uptime SLA and 24/7 engineering support.",
+  },
+  {
+    id: "security",
+    category: "Security",
+    angle: 300,
+    icon: ShieldCheck,
+    title: "Sovereign Data Security",
+    description: "Data sovereignty by design — keep critical intelligence at the edge, within your network. End-to-end encrypted communication, compliance-ready architecture, and zero-trust access models.",
   },
 ];
 
@@ -208,6 +216,187 @@ const techEcosystem = [
   { icon: Layers,    label: "Industrial Tablets & Panel PCs" },
   { icon: BarChart3, label: "Real-Time Telemetry Platforms" },
 ];
+
+// ── WhyEdgeone Radial Hub Component ──────────────────────────────────────────
+
+const WHY_RADIUS = 170;
+const WHY_CENTER = 250;
+
+const getRadialCoords = (angleDeg: number) => {
+  const rad = (angleDeg - 90) * (Math.PI / 180);
+  return {
+    x: WHY_CENTER + WHY_RADIUS * Math.cos(rad),
+    y: WHY_CENTER + WHY_RADIUS * Math.sin(rad),
+  };
+};
+
+function WhyEdgeoneRadial() {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const active = whyEdgeone.find((t) => t.id === hovered);
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+      {/* Left — Radial SVG Hub */}
+      <div className="lg:col-span-7 flex justify-center items-center relative order-2 lg:order-1 select-none">
+        <div className="w-[320px] h-[320px] sm:w-[500px] sm:h-[500px] relative">
+
+          <svg className="w-full h-full absolute inset-0" viewBox="0 0 500 500" fill="none">
+            {/* Dashed orbit circle */}
+            <circle cx={WHY_CENTER} cy={WHY_CENTER} r={WHY_RADIUS}
+              stroke="#3b82f6" strokeWidth="1" strokeOpacity="0.12" strokeDasharray="5 5" />
+
+            {/* Connection lines + travelling dot */}
+            {whyEdgeone.map((tool) => {
+              const c = getRadialCoords(tool.angle);
+              const isActive = hovered === tool.id;
+              return (
+                <g key={tool.id}>
+                  <motion.line
+                    x1={WHY_CENTER} y1={WHY_CENTER} x2={c.x} y2={c.y}
+                    stroke={isActive ? "#3b82f6" : "#3b82f6"}
+                    strokeWidth={isActive ? 2 : 1}
+                    strokeOpacity={isActive ? 0.8 : 0.15}
+                    transition={{ duration: 0.3 }}
+                  />
+                  {isActive && (
+                    <motion.circle r="4" fill="#60a5fa"
+                      animate={{ cx: [WHY_CENTER, c.x], cy: [WHY_CENTER, c.y] }}
+                      transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+                    />
+                  )}
+                </g>
+              );
+            })}
+
+            {/* Rotating outer rings */}
+            <motion.circle cx={WHY_CENTER} cy={WHY_CENTER} r="52"
+              stroke="#3b82f6" strokeWidth="2" strokeDasharray="40 20" strokeOpacity="0.4"
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+              style={{ transformOrigin: `${WHY_CENTER}px ${WHY_CENTER}px` }}
+            />
+            <motion.circle cx={WHY_CENTER} cy={WHY_CENTER} r="64"
+              stroke="#60a5fa" strokeWidth="1" strokeDasharray="10 40 20 10" strokeOpacity="0.2"
+              animate={{ rotate: -360 }}
+              transition={{ repeat: Infinity, duration: 24, ease: "linear" }}
+              style={{ transformOrigin: `${WHY_CENTER}px ${WHY_CENTER}px` }}
+            />
+          </svg>
+
+          {/* Central EdgeOne Core */}
+          <div className="absolute w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-primary bg-background flex flex-col items-center justify-center text-center shadow-xl z-20"
+            style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+          >
+            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
+            <Brain className="w-8 h-8 text-primary mb-1 relative z-10" />
+            <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-300 relative z-10">
+              EdgeOne
+            </span>
+          </div>
+
+          {/* Orbit node buttons */}
+          {whyEdgeone.map((tool) => {
+            const coords = getRadialCoords(tool.angle);
+            const isActive = hovered === tool.id;
+            const Icon = tool.icon;
+            return (
+              <div
+                key={tool.id}
+                className="absolute cursor-pointer z-30"
+                style={{
+                  left: `${(coords.x / 500) * 100}%`,
+                  top: `${(coords.y / 500) * 100}%`,
+                  transform: "translate(-50%, -50%)",
+                }}
+                onMouseEnter={() => setHovered(tool.id)}
+                onMouseLeave={() => setHovered(null)}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.18 }}
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300 relative ${
+                    isActive
+                      ? "bg-primary text-white border-2 border-primary shadow-lg shadow-primary/30"
+                      : "bg-white/5 text-zinc-400 border border-white/10 hover:border-primary/40"
+                  }`}
+                >
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+                </motion.div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Right — Info panel */}
+      <div className="lg:col-span-5 order-1 lg:order-2 flex flex-col justify-center min-h-[350px]">
+        <AnimatePresence mode="wait">
+          {active ? (
+            <motion.div
+              key={active.id}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="glass-card rounded-2xl p-8 border-2 border-primary/40 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="flex items-center gap-3 mb-5">
+                <span className="text-[10px] font-mono font-bold px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-primary uppercase tracking-widest">
+                  {active.category}
+                </span>
+                <div className="w-1.5 h-1.5 bg-primary rounded-full animate-ping" />
+              </div>
+              <h3 className="text-xl md:text-2xl font-bold font-outfit text-white mb-4">
+                {active.title}
+              </h3>
+              <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+                {active.description}
+              </p>
+              <div className="mt-6 flex items-center gap-2 text-xs font-mono font-medium text-primary">
+                <Zap className="w-4 h-4" />
+                Active Node — Hover to explore
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="default"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="glass-card rounded-2xl p-8 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-xl pointer-events-none" />
+              <div className="flex items-center gap-2 text-primary mb-6">
+                <Brain className="w-5 h-5 animate-pulse" />
+                <span className="text-xs uppercase font-mono tracking-widest font-bold">
+                  Explore EdgeOne Capabilities
+                </span>
+              </div>
+              <h3 className="text-lg md:text-xl font-bold font-outfit text-white mb-3">
+                Hover over any orbit node
+              </h3>
+              <p className="text-zinc-400 text-sm leading-relaxed mb-6">
+                Each node represents a core EdgeOne capability. Hover to discover what makes us the leading
+                Edge Computing & IoT platform for industrial operations.
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {whyEdgeone.map((t) => (
+                  <div key={t.id}
+                    className="bg-white/5 border border-white/5 rounded-lg p-2 text-center text-[10px] text-zinc-400 font-medium"
+                  >
+                    {t.title.split(" ").slice(0, 2).join(" ")}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+}
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
@@ -527,9 +716,10 @@ const Index = () => {
         </div>
       </Section>
 
-      {/* ── 8. WHY EDGEONE ──────────────────────────────────────────────────── */}
-      <Section className="py-32 bg-white/[0.02] border-y border-white/5">
-        <div className="text-center mb-20">
+      {/* ── 8. WHY EDGEONE — Radial Hub ─────────────────────────────────────── */}
+      <Section className="py-32 bg-white/[0.02] border-y border-white/5 overflow-hidden">
+        {/* Header */}
+        <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold uppercase tracking-[0.3em] text-primary mb-6 block">Why EdgeOne</span>
           <h2 className="text-4xl md:text-6xl font-black font-outfit tracking-tight mb-6">
             Smarter Systems. Faster Decisions.{" "}
@@ -537,41 +727,11 @@ const Index = () => {
           </h2>
           <p className="text-lg text-zinc-400 max-w-2xl mx-auto font-medium">
             We don't just deliver technology. We engineer intelligent ecosystems that evolve with your operations.
-            Here's what sets us apart as one of the best IoT platform companies in India and globally.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {whyEdgeone.map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, x: i % 2 === 0 ? -24 : 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="glass-card rounded-3xl p-10 group hover:-translate-y-1 transition-all duration-500 relative overflow-hidden"
-            >
-              <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -ml-16 -mt-16 group-hover:bg-primary/10 transition-colors" />
-              <div className="flex items-start gap-6 relative z-10">
-                <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors relative">
-                  <div className="absolute inset-0 blur-xl bg-primary/20 rounded-full scale-0 group-hover:scale-100 transition-transform" />
-                  <item.icon className="w-7 h-7 text-primary relative z-10" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-5 font-outfit">{item.title}</h3>
-                  <ul className="space-y-2.5">
-                    {item.points.map((pt) => (
-                      <li key={pt} className="flex items-center gap-3 text-sm text-zinc-400 font-medium">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
-                        {pt}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {/* Radial hub grid */}
+        <WhyEdgeoneRadial />
       </Section>
 
       {/* ── 9. TECHNOLOGY ECOSYSTEM ─────────────────────────────────────────── */}
